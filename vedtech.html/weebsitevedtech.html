@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VEDATECH — From Vedas to Code</title>
+  <meta name="description" content="VEDATECH: From Vedas to Code — Workshops, mentorship, and a curated tech knowledge hub for schools, volunteers, and colleges." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f1a;
+      --panel: #0e1424;
+      --muted: #a3b2d1;
+      --text: #e8efff;
+      --brand-1: #6ef3ff;
+      --brand-2: #8b5cf6; /* violet */
+      --brand-3: #22d3ee; /* cyan */
+      --ok: #22c55e;
+      --warn: #f59e0b;
+      --bad: #ef4444;
+      --card: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      --glass: rgba(255,255,255,0.06);
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+    * { box-sizing: border-box }
+    html, body { margin:0; padding:0; background: var(--bg); color: var(--text); font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    a { color: inherit; text-decoration: none }
+    img { max-width: 100%; display: block }
+    .container { width: min(1200px, 92%); margin-inline: auto }
+
+    /* Header */
+    header {
+      position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px);
+      background: linear-gradient(180deg, rgba(13,18,34,0.9), rgba(13,18,34,0.6));
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav { display:flex; align-items:center; justify-content:space-between; padding: 14px 0 }
+    .brand { display:flex; align-items:center; gap:10px; font-weight: 800; letter-spacing: 0.3px }
+    .brand .logo { width:36px; height:36px; border-radius: 10px; background: radial-gradient(circle at 30% 30%, var(--brand-1), var(--brand-2)); box-shadow: 0 0 24px rgba(110,243,255,0.65) }
+    .nav a.btn { padding:10px 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.12); transition: transform .2s, box-shadow .2s; font-weight:600 }
+    .nav a.btn:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,0,0,0.25), 0 0 20px rgba(139,92,246,0.45)}
+    .nav .links { display:flex; gap: 10px; flex-wrap: wrap }
+
+    /* Hero */
+    .hero { position:relative; padding: 96px 0 72px; overflow:hidden }
+    .glow { position:absolute; inset: -10% -20% auto -20%; height: 60vh; background: radial-gradient(60% 60% at 50% 30%, rgba(110,243,255,0.28), rgba(139,92,246,0.18) 40%, rgba(2,6,23,0)); filter: blur(40px); pointer-events:none }
+    h1 { font-size: clamp(34px, 6vw, 64px); line-height: 1.04; margin: 0 0 14px; font-weight: 900; letter-spacing: -0.02em; text-shadow: 0 0 30px rgba(110,243,255,0.25) }
+    .subtitle { color: var(--muted); font-size: clamp(15px, 2.6vw, 18px) }
+    .cta { margin-top: 24px; display:flex; gap:12px; flex-wrap: wrap }
+    .cta .primary { background: linear-gradient(90deg, var(--brand-2), var(--brand-3)); padding:12px 18px; border-radius:999px; font-weight:700; box-shadow: 0 12px 30px rgba(139,92,246,0.35) }
+    .cta .ghost { background: transparent; padding:12px 18px; border-radius:999px; border: 1px solid rgba(255,255,255,0.16); font-weight:700 }
+
+    .hero-grid { margin-top: 40px; display:grid; grid-template-columns: 1.2fr 0.8fr; gap: 20px }
+    .panel { background: var(--card); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius); padding:20px; box-shadow: var(--shadow) }
+    .how { display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px }
+    .how .card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); padding:16px; border-radius: 14px }
+    .how .card h4 { margin: 4px 0 8px }
+
+    /* Testimonials */
+    .carousel { position: relative; overflow: hidden; border-radius: 14px }
+    .slides { display:flex; transition: transform .6s ease }
+    .slide { min-width: 100%; padding: 16px }
+    .dots { display:flex; gap:6px; justify-content:center; margin-top: 8px }
+    .dot { width:8px; height:8px; border-radius:999px; background: rgba(255,255,255,0.25); cursor:pointer }
+    .dot.active { background: var(--brand-3) }
+
+    /* Sections */
+    section { padding: 72px 0; scroll-margin-top: 72px }
+    section h2 { font-size: clamp(26px, 3.5vw, 36px); margin: 0 0 12px; letter-spacing: -0.01em }
+    .muted { color: var(--muted) }
+
+    /* Grid helpers */
+    .grid { display:grid; gap: 14px }
+    .cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) }
+    .cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .how { grid-template-columns: 1fr; }
+      .cols-3 { grid-template-columns: 1fr; }
+      .cols-2 { grid-template-columns: 1fr; }
+    }
+
+    /* Cards / Chips */
+    .chip { display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.04); font-size: 12px; color: var(--muted) }
+
+    /* Dashboards */
+    .dash-grid { display:grid; grid-template-columns: 1.4fr 1fr; gap: 14px }
+    @media (max-width: 900px) { .dash-grid { grid-template-columns: 1fr } }
+    .stat { background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px }
+    .stat h3 { margin: 0; font-size: 14px; color: var(--muted) }
+    .stat .num { font-weight: 800; font-size: 28px; margin-top: 6px }
+    .progress { height: 8px; background: rgba(255,255,255,0.1); border-radius: 999px; overflow: hidden; margin-top: 10px }
+    .progress > i { display:block; height:100%; width: 0; background: linear-gradient(90deg, var(--brand-2), var(--brand-3)) }
+
+    /* Tables */
+    table { width:100%; border-collapse: collapse }
+    th, td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 14px }
+    th { text-align:left; color: var(--muted); font-weight: 600 }
+    tr:hover td { background: rgba(255,255,255,0.03) }
+
+    /* Calendar (simple mock) */
+    .calendar { display:grid; grid-template-columns: repeat(7, 1fr); gap: 6px }
+    .calendar .cell { aspect-ratio: 1/1; border-radius: 10px; border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; font-size: 12px; background: rgba(255,255,255,0.02) }
+    .calendar .cell.event { outline: 2px solid var(--brand-3); box-shadow: 0 0 0 3px rgba(34,211,238,0.2) inset }
+
+    /* Forms */
+    label { display:block; font-size: 13px; color: var(--muted); margin-bottom: 6px }
+    input, select, textarea { width:100%; background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid rgba(255,255,255,0.14); border-radius: 12px; padding: 10px 12px; outline: none }
+    textarea { min-height: 120px }
+    .btn { display:inline-flex; align-items:center; gap:8px; background: linear-gradient(90deg, var(--brand-2), var(--brand-3)); border:none; color:#001018; font-weight:800; padding: 10px 14px; border-radius: 999px; cursor: pointer; box-shadow: 0 8px 22px rgba(34,211,238,0.3) }
+    .btn.secondary { background: transparent; color: var(--text); border: 1px solid rgba(255,255,255,0.18); box-shadow:none }
+
+    /* Footer */
+    footer { padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.08); color: var(--muted) }
+
+    /* Floating theme toggle */
+    .toggle { position: fixed; right: 16px; bottom: 16px; z-index: 60 }
+
+    /* Animations */
+    .fade-up { opacity: 0; transform: translateY(14px); transition: all .7s ease }
+    .fade-up.in { opacity: 1; transform: translateY(0) }
+    .tilt { transform: perspective(800px) rotateX(3deg) rotateY(-3deg); transition: transform .3s ease }
+    .tilt:hover { transform: perspective(800px) rotateX(0) rotateY(0) translateY(-2px) }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo"></div>
+        <span>VEDATECH</span>
+      </div>
+      <nav class="links">
+        <a class="btn" href="#about">About</a>
+        <a class="btn" href="#how">How it works</a>
+        <a class="btn" href="#testimonials">Stories</a>
+        <a class="btn" href="#hub">Knowledge Hub</a>
+        <a class="btn" href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero container">
+      <div class="glow" aria-hidden="true"></div>
+      <div class="fade-up in">
+        <h1>From Vedas to Code—<br/>A Journey of Knowledge</h1>
+        <p class="subtitle">Workshops, mentorship, and a curated technology hub that connects <strong>Schools</strong>, <strong>Colleges</strong>, and <strong>Volunteers</strong>.</p>
+        <div class="cta">
+          <a class="primary" href="#school-dash">Join as Volunteer</a>
+          <a class="ghost" href="#school-dash">Request a Workshop</a>
+          <a class="ghost" href="#hub">Explore Knowledge</a>
+        </div>
+      </div>
+
+      <div class="hero-grid">
+        <div class="panel tilt">
+          <div class="chip">🔭 Mission</div>
+          <h3 style="margin:8px 0 6px">About VEDATECH</h3>
+          <p class="muted">We blend timeless Vedic wisdom with modern technology to inspire the next generation. Our social impact model empowers student mentors to deliver hands-on coding, robotics, AI and cybersecurity workshops to schools.</p>
+        </div>
+        <div class="panel tilt">
+          <div class="chip">⚡ Impact</div>
+          <div class="grid cols-2" style="margin-top:8px">
+            <div class="stat">
+              <h3>Students Reached</h3>
+              <div class="num" id="stat-students">0</div>
+              <div class="progress"><i id="prog-students"></i></div>
+            </div>
+            <div class="stat">
+              <h3>Workshops Delivered</h3>
+              <div class="num" id="stat-workshops">0</div>
+              <div class="progress"><i id="prog-workshops"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="how" class="panel" style="margin-top:16px">
+        <div class="chip">🔁 How It Works</div>
+        <div class="how" style="margin-top:10px">
+          <div class="card fade-up">
+            <h4>Schools</h4>
+            <p class="muted">Request practical tech workshops tailored to age and level.</p>
+          </div>
+          <div class="card fade-up">
+            <h4>Colleges</h4>
+            <p class="muted">Nominate mentors and coordinate outreach programs.</p>
+          </div>
+          <div class="card fade-up">
+            <h4>Volunteers</h4>
+            <p class="muted">Deliver sessions, earn badges, and track your impact.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section id="testimonials">
+      <div class="container">
+        <h2>Success Stories</h2>
+        <p class="muted">Feedback from students, mentors, and teachers.</p>
+        <div class="panel carousel" aria-roledescription="carousel">
+          <div class="slides" id="slides">
+            <div class="slide">
+              <p>“VEDATECH turned our students into creators. The robotics demo had everyone buzzing!” — <strong>Teacher, Lotus Public School</strong></p>
+            </div>
+            <div class="slide">
+              <p>“I earned my first badge teaching Python! Loved the resources and guidance.” — <strong>Anaya, Volunteer Mentor</strong></p>
+            </div>
+            <div class="slide">
+              <p>“The AI session was so fun, we built a mini classifier in class.” — <strong>Student, Grade 9</strong></p>
+            </div>
+          </div>
+        </div>
+        <div class="dots" id="dots" aria-label="carousel pagination"></div>
+      </div>
+    </section>
+
+    <!-- SCHOOL DASHBOARD -->
+    <section id="school-dash">
+      <div class="container">
+        <h2>Dashboard — Schools</h2>
+        <p class="muted">Request workshops, track sessions, and share feedback.</p>
+        <div class="dash-grid">
+          <div class="panel">
+            <div class="chip">📝 Request Workshop</div>
+            <form id="reqForm" style="margin-top:12px">
+              <div class="grid cols-2">
+                <div>
+                  <label>Topic</label>
+                  <select required>
+                    <option>Python Basics</option>
+                    <option>Robotics</option>
+                    <option>AI & ML</option>
+                    <option>Cybersecurity</option>
+                  </select>
+                </div>
+                <div>
+                  <label>Level</label>
+                  <select required>
+                    <option>Beginner</option>
+                    <option>Intermediate</option>
+                    <option>Advanced</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid cols-2" style="margin-top:10px">
+                <div>
+                  <label>Date</label>
+                  <input type="date" required />
+                </div>
+                <div>
+                  <label>Students (approx)</label>
+                  <input type="number" min="1" placeholder="e.g. 60" required />
+                </div>
+              </div>
+              <div style="margin-top:10px">
+                <label>Notes</label>
+                <textarea placeholder="Any specific goals or constraints..."></textarea>
+              </div>
+              <div style="margin-top:12px; display:flex; gap:10px">
+                <button class="btn" type="submit">Submit Request</button>
+                <button class="btn secondary" type="reset">Reset</button>
+              </div>
+              <p id="reqMsg" class="muted" style="margin-top:8px"></p>
+            </form>
+          </div>
+          <div class="panel">
+            <div class="chip">📅 Upcoming Sessions</div>
+            <div class="calendar" style="margin-top:10px" id="calendar"></div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:14px">
+          <div class="chip">🧾 Past Sessions</div>
+          <table style="margin-top:8px">
+            <thead>
+              <tr><th>Topic</th><th>Date</th><th>Feedback</th><th>Certificate</th></tr>
+            </thead>
+            <tbody id="pastTable">
+              <tr><td>Python Basics</td><td>2025-07-15</td><td>⭐⭐⭐⭐☆</td><td><a href="#">Download</a></td></tr>
+              <tr><td>Robotics Intro</td><td>2025-07-28</td><td>⭐⭐⭐⭐⭐</td><td><a href="#">Download</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel" style="margin-top:14px">
+          <div class="chip">😊 Feedback</div>
+          <div style="display:flex; align-items:center; gap:10px; margin-top:10px">
+            <button class="btn secondary" data-emoji="😞">😞</button>
+            <button class="btn secondary" data-emoji="🙂">🙂</button>
+            <button class="btn secondary" data-emoji="🤩">🤩</button>
+            <input id="fbInput" placeholder="Tell us more..." style="flex:1" />
+            <button class="btn" id="fbSend">Send</button>
+          </div>
+          <p id="fbMsg" class="muted" style="margin-top:8px"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- VOLUNTEER DASHBOARD -->
+    <section id="volunteer-dash">
+      <div class="container">
+        <h2>Dashboard — Volunteers</h2>
+        <p class="muted">View sessions, upload reports, and track impact.</p>
+        <div class="dash-grid">
+          <div class="panel">
+            <div class="chip">🗓️ My Sessions</div>
+            <table style="margin-top:10px">
+              <thead>
+                <tr><th>Date</th><th>School</th><th>Topic</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>2025-08-22</td><td>Sunrise HS</td><td>Cybersecurity</td><td><span class="chip">Scheduled</span></td></tr>
+                <tr><td>2025-08-26</td><td>Bluebell HS</td><td>Robotics</td><td><span class="chip">Pending</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="panel">
+            <div class="chip">⬆️ Upload Session Report</div>
+            <div style="margin-top:10px" class="grid cols-2">
+              <div>
+                <label>Choose File</label>
+                <input type="file" id="reportFile" accept=".pdf,.doc,.docx" />
+              </div>
+              <div>
+                <label>Notes</label>
+                <input id="reportNotes" placeholder="Summary, highlights..." />
+              </div>
+            </div>
+            <button class="btn" style="margin-top:10px" id="uploadBtn">Upload</button>
+            <p id="uploadMsg" class="muted" style="margin-top:8px"></p>
+          </div>
+        </div>
+
+        <div class="grid cols-3" style="margin-top:14px">
+          <div class="stat">
+            <h3>Badges Earned</h3>
+            <div class="num" id="badges">0</div>
+            <div class="progress"><i id="prog-badges"></i></div>
+          </div>
+          <div class="stat">
+            <h3>Students Reached</h3>
+            <div class="num" id="v-students">0</div>
+            <div class="progress"><i id="prog-v-students"></i></div>
+          </div>
+          <div class="stat">
+            <h3>Feedback Score</h3>
+            <div class="num" id="v-score">0</div>
+            <div class="progress"><i id="prog-v-score"></i></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COLLEGE DASHBOARD -->
+    <section id="college-dash">
+      <div class="container">
+        <h2>Dashboard — Colleges</h2>
+        <p class="muted">Manage mentors and monitor outreach performance.</p>
+        <div class="panel">
+          <div class="chip">👥 Mentor Roster</div>
+          <table style="margin-top:10px">
+            <thead><tr><th>Name</th><th>Skills</th><th>Sessions</th><th>Rating</th></tr></thead>
+            <tbody>
+              <tr><td>Aarav</td><td>Python, AI</td><td>8</td><td>4.6</td></tr>
+              <tr><td>Meera</td><td>Robotics, C</td><td>5</td><td>4.8</td></tr>
+              <tr><td>Rohit</td><td>Cybersecurity</td><td>6</td><td>4.5</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="grid cols-3" style="margin-top:14px">
+          <div class="stat"><h3>Active Mentors</h3><div class="num" id="c-mentors">0</div><div class="progress"><i id="prog-c-mentors"></i></div></div>
+          <div class="stat"><h3>Open Requests</h3><div class="num" id="c-requests">0</div><div class="progress"><i id="prog-c-requests"></i></div></div>
+          <div class="stat"><h3>Avg Rating</h3><div class="num" id="c-rating">0</div><div class="progress"><i id="prog-c-rating"></i></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KNOWLEDGE HUB -->
+    <section id="hub">
+      <div class="container">
+        <h2>Technology Knowledge Hub</h2>
+        <p class="muted">Curated topics with levels, quizzes, and resources.</p>
+        <div class="grid cols-3">
+          <div class="panel">
+            <div class="chip">💻 Coding</div>
+            <p class="muted">Python, JS, Data Structures.</p>
+            <button class="btn secondary" onclick="openModal('coding')">Browse</button>
+          </div>
+          <div class="panel">
+            <div class="chip">🤖 AI</div>
+            <p class="muted">ML, model intuition, ethics.</p>
+            <button class="btn secondary" onclick="openModal('ai')">Browse</button>
+          </div>
+          <div class="panel">
+            <div class="chip">🔐 Cybersecurity</div>
+            <p class="muted">Threats, hygiene, hands‑on labs.</p>
+            <button class="btn secondary" onclick="openModal('cyber')">Browse</button>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:14px">
+          <div class="chip">🧠 Quick Quiz</div>
+          <div class="grid cols-2" style="margin-top:10px">
+            <div>
+              <p class="muted">Which of these is a strong password?</p>
+              <label><input type="radio" name="q1" value="a"> password123</label>
+              <label><input type="radio" name="q1" value="b"> 2025</label>
+              <label><input type="radio" name="q1" value="c"> p@R!5_1oNg#Key</label>
+              <div style="margin-top:8px"><button class="btn" onclick="gradeQuiz()">Check Answer</button></div>
+              <p id="quizMsg" class="muted" style="margin-top:6px"></p>
+            </div>
+            <div>
+              <p class="muted">Resources</p>
+              <ul>
+                <li><a href="#">Python Cheat‑Sheet (PDF)</a></li>
+                <li><a href="#">Robotics Starter Kit</a></li>
+                <li><a href="#">AI in Schools — Guide</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADMIN PANEL -->
+    <section id="admin">
+      <div class="container">
+        <h2>Admin Panel</h2>
+        <p class="muted">Manage users, match requests, and view analytics.</p>
+        <div class="grid cols-3">
+          <div class="panel">
+            <div class="chip">👤 User Management</div>
+            <p class="muted">Add, edit, and deactivate users (Schools, Volunteers, Colleges).</p>
+            <button class="btn secondary" onclick="toast('Coming soon: CRUD modals')">Open</button>
+          </div>
+          <div class="panel">
+            <div class="chip">🤝 Matchmaking Engine</div>
+            <p class="muted">Auto‑assign mentors based on skills, location, and availability.</p>
+            <button class="btn secondary" onclick="simulateMatch()">Run Match</button>
+            <p id="matchMsg" class="muted" style="margin-top:6px"></p>
+          </div>
+          <div class="panel">
+            <div class="chip">📈 Analytics</div>
+            <canvas id="miniChart" width="400" height="180" style="margin-top:10px; background: rgba(255,255,255,0.03); border-radius: 10px"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <div class="container">
+        <h2>Contact</h2>
+        <p class="muted">Follow, email, or call us — and join the newsletter.</p>
+        <div class="grid cols-2">
+          <div class="panel">
+            <div class="chip">✉️ Message</div>
+            <form id="contactForm" style="margin-top:10px">
+              <label>Name</label>
+              <input required placeholder="Your name" />
+              <div style="height:8px"></div>
+              <label>Email</label>
+              <input type="email" required placeholder="you@mail.com" />
+              <div style="height:8px"></div>
+              <label>Message</label>
+              <textarea required placeholder="How can we help?"></textarea>
+              <div style="height:10px"></div>
+              <button class="btn" type="submit">Send</button>
+              <p id="contactMsg" class="muted" style="margin-top:8px"></p>
+            </form>
+          </div>
+          <div class="panel">
+            <div class="chip">🔗 Social</div>
+            <ul>
+              <li><a href="#">Twitter/X</a></li>
+              <li><a href="#">LinkedIn</a></li>
+              <li><a href="#">Instagram</a></li>
+            </ul>
+            <div style="height:10px"></div>
+            <div class="chip">📧 hello@vedatech.org</div>
+            <div style="height:6px"></div>
+            <div class="chip">📞 +91‑90000‑00000</div>
+            <div style="height:16px"></div>
+            <div class="chip">📰 Newsletter</div>
+            <div style="height:10px"></div>
+            <div style="display:flex; gap:8px">
+              <input id="newsEmail" placeholder="you@mail.com" />
+              <button class="btn" onclick="subscribe()">Subscribe</button>
+            </div>
+            <p id="newsMsg" class="muted" style="margin-top:8px"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap">
+      <div>© <span id="year"></span> VEDATECH. All rights reserved.</div>
+      <div class="chip">Built with HTML • CSS • JS</div>
+    </div>
+  </footer>
+
+  <!-- Modal -->
+  <div id="modal" style="position:fixed; inset:0; display:none; place-items:center; background: rgba(0,0,0,0.55)">
+    <div class="panel" style="width:min(720px, 92%); position: relative">
+      <button onclick="closeModal()" class="btn secondary" style="position:absolute; right:10px; top:10px">Close</button>
+      <h3 id="modalTitle" style="margin-top:0">Browse</h3>
+      <div id="modalBody" class="muted"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" style="position: fixed; left:50%; transform:translateX(-50%); bottom: 24px; background: #0f172a; border:1px solid rgba(255,255,255,0.14); color: var(--text); padding: 10px 14px; border-radius: 999px; display:none"></div>
+
+  <!-- Theme toggle -->
+  <div class="toggle">
+    <button class="btn secondary" onclick="toggleTheme()">🌗 Theme</button>
+  </div>
+
+  <script>
+    // Small utilities
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+    const toast = (msg) => { const t = $('#toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(()=> t.style.display='none', 1800) }
+
+    // Stats counters with progress bars
+    function animateStat(numEl, progEl, target, duration=1600){
+      const start = performance.now();
+      const from = 0;
+      function step(now){
+        const p = Math.min(1, (now - start) / duration);
+        const val = Math.round(from + (target - from) * p);
+        numEl.textContent = val.toLocaleString();
+        progEl.style.width = (p * 100) + '%';
+        if(p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    window.addEventListener('load', () => {
+      // Hero stats
+      animateStat($('#stat-students'), $('#prog-students'), 12000);
+      animateStat($('#stat-workshops'), $('#prog-workshops'), 180);
+
+      // Volunteer stats
+      animateStat($('#badges'), $('#prog-badges'), 12);
+      animateStat($('#v-students'), $('#prog-v-students'), 860);
+      animateStat($('#v-score'), $('#prog-v-score'), 4.7 * 10); // scaled
+
+      // College stats
+      animateStat($('#c-mentors'), $('#prog-c-mentors'), 34);
+      animateStat($('#c-requests'), $('#prog-c-requests'), 7);
+      animateStat($('#c-rating'), $('#prog-c-rating'), 4.5 * 10);
+
+      // Year
+      $('#year').textContent = new Date().getFullYear();
+
+      // Calendar (simple mock current month days)
+      const cal = $('#calendar');
+      const days = 35; for(let i=1;i<=days;i++){ const d = document.createElement('div'); d.className='cell'; d.textContent=i; if([5,12,21,29].includes(i)) d.classList.add('event'); cal.appendChild(d); }
+
+      // Testimonials carousel
+      setupCarousel();
+
+      // Draw mini chart
+      drawMiniChart();
+
+      // Fade ups on scroll
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in') })
+      }, { threshold: 0.1 })
+      $$('.fade-up').forEach(el=> io.observe(el))
+    })
+
+    // Forms
+    $('#reqForm').addEventListener('submit', (e)=>{ e.preventDefault(); $('#reqMsg').textContent = '✅ Request submitted. We\'ll get back within 24–48 hrs.'; toast('Workshop request sent!') })
+    $('#fbSend').addEventListener('click', ()=>{ const emo = document.activeElement?.dataset?.emoji || '🙂'; $('#fbMsg').textContent = `Thanks for the feedback ${emo}!`; })
+    $('#contactForm').addEventListener('submit', (e)=>{ e.preventDefault(); $('#contactMsg').textContent = '✅ Message received. We\'ll reply shortly.'; toast('Message sent') })
+    $('#uploadBtn').addEventListener('click', ()=>{ const f = $('#reportFile').files[0]; $('#uploadMsg').textContent = f ? `✅ Uploaded: ${f.name}` : 'Please choose a file.'; if(f) toast('Report uploaded') })
+
+    function subscribe(){ const v = $('#newsEmail').value; if(!v.includes('@')) { $('#newsMsg').textContent = 'Please enter a valid email.'; return } $('#newsMsg').textContent = '🎉 Subscribed! Welcome aboard.'; toast('Subscribed') }
+
+    function gradeQuiz(){ const ans = document.querySelector('input[name="q1"]:checked'); if(!ans){ $('#quizMsg').textContent = 'Pick an option'; return } $('#quizMsg').textContent = ans.value==='c' ? '✅ Correct!' : '❌ Try again.' }
+
+    // Carousel logic
+    function setupCarousel(){
+      const slides = $('#slides');
+      const dots = $('#dots');
+      const total = slides.children.length;
+      for(let i=0;i<total;i++){ const d = document.createElement('div'); d.className='dot' + (i===0?' active':''); d.addEventListener('click', ()=> go(i)); dots.appendChild(d) }
+      let index = 0; let timer = null;
+      function go(i){ index = i; slides.style.transform = `translateX(-${i*100}%)`; $$('#dots .dot').forEach((el,j)=> el.classList.toggle('active', j===i)); restart() }
+      function next(){ go((index+1)%total) }
+      function restart(){ clearInterval(timer); timer = setInterval(next, 4000) }
+      restart();
+    }
+
+    // Simple canvas line chart without external libs
+    function drawMiniChart(){
+      const c = document.getElementById('miniChart'); if(!c) return; const ctx = c.getContext('2d');
+      const w = c.width, h = c.height; ctx.clearRect(0,0,w,h);
+      // Axes
+      ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(40, 10); ctx.lineTo(40, h-30); ctx.lineTo(w-10, h-30); ctx.stroke();
+      // Data
+      const data = [8, 12, 10, 16, 14, 20, 24, 22, 28, 30, 36, 40];
+      const max = Math.max(...data) * 1.1; const xStep = (w-60) / (data.length-1); const y = (v)=> (h-30) - (v/max)*(h-50);
+      ctx.beginPath(); ctx.moveTo(40, y(data[0]));
+      ctx.strokeStyle = '#8b5cf6'; ctx.lineWidth = 2;
+      for(let i=1;i<data.length;i++){ ctx.lineTo(40 + i*xStep, y(data[i])) }
+      ctx.stroke();
+      // Fill
+      const g = ctx.createLinearGradient(0, 0, 0, h);
+      g.addColorStop(0, 'rgba(139,92,246,0.35)');
+      g.addColorStop(1, 'rgba(139,92,246,0)');
+      ctx.fillStyle = g; ctx.lineTo(w-10, h-30); ctx.lineTo(40, h-30); ctx.closePath(); ctx.fill();
+    }
+
+    // Modal
+    function openModal(topic){
+      const title = { coding:'Coding', ai:'Artificial Intelligence', cyber:'Cybersecurity' }[topic] || 'Browse';
+      $('#modalTitle').textContent = title;
+      $('#modalBody').innerHTML = `
+        <div class="grid cols-3">
+          <div class="panel"><strong>Beginner</strong><p class="muted">Hand‑picked articles, videos, and mini projects.</p><button class="btn secondary" onclick=\"toast('Added to plan')\">Add to Plan</button></div>
+          <div class="panel"><strong>Intermediate</strong><p class="muted">Deepen concepts with guided labs.</p><button class="btn secondary" onclick=\"toast('Added to plan')\">Add to Plan</button></div>
+          <div class="panel"><strong>Advanced</strong><p class="muted">Capstone projects and research notes.</p><button class="btn secondary" onclick=\"toast('Added to plan')\">Add to Plan</button></div>
+        </div>`;
+      $('#modal').style.display = 'grid';
+    }
+    function closeModal(){ $('#modal').style.display = 'none' }
+
+    // Theme
+    function toggleTheme(){
+      const dark = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() === '#0b0f1a';
+      if(dark){
+        document.documentElement.style.setProperty('--bg', '#f8fafc');
+        document.documentElement.style.setProperty('--panel', '#ffffff');
+        document.documentElement.style.setProperty('--text', '#0b1020');
+        document.documentElement.style.setProperty('--muted', '#4b5563');
+      } else {
+        document.documentElement.style.setProperty('--bg', '#0b0f1a');
+        document.documentElement.style.setProperty('--panel', '#0e1424');
+        document.documentElement.style.setProperty('--text', '#e8efff');
+        document.documentElement.style.setProperty('--muted', '#a3b2d1');
+      }
+      drawMiniChart();
+    }
+
+    // Expose functions used inline
+    window.toast = toast;
+    window.openModal = openModal;
+    window.closeModal = closeModal;
+    window.subscribe = subscribe;
+    window.gradeQuiz = gradeQuiz;
+    window.toggleTheme = toggleTheme;
+    window.simulateMatch = function(){ const options = ['Matched 12 sessions','Matched 8 sessions','No suitable mentors found — try again']; const msg = options[Math.floor(Math.random()*options.length)]; $('#matchMsg').textContent = '⏱ ' + msg; toast(msg) }
+  </script>
+</body>
+</html>
